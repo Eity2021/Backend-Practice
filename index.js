@@ -7,8 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const ObjectId = require('mongodb').ObjectId;
-
+const ObjectId = require("mongodb").ObjectId;
 
 const uri =
   "mongodb+srv://practice:89WXtDS6BAUtRk0K@cluster0.ycnng.mongodb.net/?retryWrites=true&w=majority";
@@ -33,6 +32,14 @@ async function run() {
       res.send(users);
     });
 
+    // per person id
+    app.get("/user/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = await userCollection.findOne(query);
+      res.send(result)
+    });
+
     // post user
     app.post("/user", async (req, res) => {
       const newUser = req.body;
@@ -44,19 +51,11 @@ async function run() {
     // delete user id
 
     app.delete("/user/:id", async (req, res) => {
-     const id = req.params.id;
-     const query = {_id:ObjectId(id)} 
-     const result = await userCollection.deleteOne(query);
-     res.send(result);
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
     });
-
-
-
-
-
-
-
-
   } finally {
     // await client.close();
   }
